@@ -4,7 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.Book;
 import com.example.demo.service.BookService;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +28,7 @@ public class BookController {
     }
 
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
+    public Book createBook(@Valid @RequestBody Book book) {
         return bookService.saveBook(book);
     }
 

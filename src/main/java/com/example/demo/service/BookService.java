@@ -1,7 +1,9 @@
 
 package com.example.demo.service;
 
+import com.example.demo.Author;
 import com.example.demo.Book;
+import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,12 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository,
+                       AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     public List<Book> getAllBooks() {
@@ -27,6 +32,22 @@ public class BookService {
     }
 
     public Book saveBook(Book book) {
+        if (book.getAuthor() == null ||
+                book.getAuthor().getId() == null) {
+            throw new IllegalArgumentException("Author ID is required");
+        }
+
+        Author author = authorRepository.findById(
+                book.getAuthor().getId()
+        ).orElseThrow(() ->
+                new RuntimeException(
+                        "Author not found with id: "
+                                + book.getAuthor().getId()
+                )
+        );
+
+        book.setAuthor(author);
+
         return bookRepository.save(book);
     }
 

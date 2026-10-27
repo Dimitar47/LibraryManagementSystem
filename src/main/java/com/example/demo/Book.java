@@ -1,19 +1,35 @@
 
 package com.example.demo;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 
 @Entity
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UQ_book_isbn",
+                        columnNames = "isbn"
+                )
+        }
+)
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
     private String title;
 
+
+    @NotBlank(message = "ISBN is required")
     private String isbn;
 
+
+    @NotNull(message = "Author is required")
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
